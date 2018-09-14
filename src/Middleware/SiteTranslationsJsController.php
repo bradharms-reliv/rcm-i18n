@@ -3,6 +3,8 @@
 namespace RcmI18n\Middleware;
 
 use Doctrine\ORM\EntityManager;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rcm\Service\SiteService;
@@ -12,7 +14,7 @@ use Zend\Diactoros\Response;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class SiteTranslationsJsController
+class SiteTranslationsJsController implements MiddlewareInterface
 {
     /**
      * @var EntityManager
@@ -45,10 +47,9 @@ class SiteTranslationsJsController
      *
      * @return ResponseInterface
      */
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
+        DelegateInterface $delegate = null
     ) {
         $response = new Response(
             'php://memory',

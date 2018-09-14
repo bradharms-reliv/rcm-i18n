@@ -2,6 +2,8 @@
 
 namespace RcmI18n\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Zend\Diactoros\Response\JsonResponse;
@@ -12,7 +14,7 @@ use Zend\I18n\Translator\TranslatorInterface;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class ApiTranslateController
+class ApiTranslateController implements MiddlewareInterface
 {
     /**
      * @param TranslatorInterface $translator
@@ -42,10 +44,9 @@ class ApiTranslateController
      *
      * @return ResponseInterface
      */
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
+        DelegateInterface $delegate = null
     ) {
         $translator = $this->getTranslator();
 

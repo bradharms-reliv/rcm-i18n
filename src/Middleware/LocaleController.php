@@ -2,6 +2,8 @@
 
 namespace RcmI18n\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Rcm\Service\SiteService;
@@ -11,7 +13,7 @@ use Zend\Diactoros\Response\JsonResponse;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class LocaleController
+class LocaleController implements MiddlewareInterface
 {
     /**
      * @var Locales
@@ -36,18 +38,16 @@ class LocaleController
     }
 
     /**
-     * __invoke
+     * process
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $next
+     * @param DelegateInterface|null $delegate
      *
      * @return ResponseInterface
      */
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
+        DelegateInterface $delegate = null
     ) {
         $site = $this->siteService->getCurrentSite(
             $request->getUri()->getHost()

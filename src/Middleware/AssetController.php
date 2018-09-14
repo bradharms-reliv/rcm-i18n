@@ -2,8 +2,11 @@
 
 namespace RcmI18n\Middleware;
 
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface as Request;
+use Psr\Http\Message\ServerRequestInterface;
+use Zend\Diactoros\Response;
 
 /**
  * Class AssetController
@@ -13,7 +16,7 @@ use Psr\Http\Message\ServerRequestInterface as Request;
  * @license   License.txt
  * @link      https://github.com/reliv
  */
-class AssetController
+class AssetController implements MiddlewareInterface
 {
     /**
      *
@@ -112,7 +115,7 @@ class AssetController
      *
      * @return string|null
      */
-    protected function getFileName(Request $request)
+    protected function getFileName(ServerRequestInterface $request)
     {
         return $request->getAttribute(
             self::PARAM_FILE_PATH
@@ -122,14 +125,14 @@ class AssetController
     /**
      * __invoke
      *
-     * @param Request           $request
-     * @param ResponseInterface $response
-     * @param callable|null     $next
+     * @param ServerRequestInterface $request
+     * @param DelegateInterface|null $next
      *
      * @return ResponseInterface
      */
-    public function __invoke(Request $request, ResponseInterface $response, callable $next = null)
+    public function process(ServerRequestInterface $request, DelegateInterface $delegate = null)
     {
+        $response = new Response();
         $fileName = $this->getFileName($request);
 
         if (empty($fileName)) {

@@ -3,6 +3,8 @@
 namespace RcmI18n\Middleware;
 
 use Doctrine\ORM\EntityManager;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RcmHtmlPurifier\Api\Purify;
@@ -14,7 +16,7 @@ use Zend\Diactoros\Response\JsonResponse;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class MessageUpdateController
+class MessageUpdateController implements MiddlewareInterface
 {
     /**
      * @var IsAllowed
@@ -61,7 +63,7 @@ class MessageUpdateController
     }
 
     /**
-     * __invoke
+     * process
      *
      * @param ServerRequestInterface $request
      * @param ResponseInterface      $response
@@ -69,10 +71,9 @@ class MessageUpdateController
      *
      * @return ResponseInterface
      */
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
-        ResponseInterface $response,
-        callable $next = null
+        DelegateInterface $delegate = null
     ) {
         if (!$this->isAllowed(
             $request,

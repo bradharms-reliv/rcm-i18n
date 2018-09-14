@@ -3,6 +3,8 @@
 namespace RcmI18n\Middleware;
 
 use Doctrine\ORM\EntityManager;
+use Interop\Http\ServerMiddleware\DelegateInterface;
+use Interop\Http\ServerMiddleware\MiddlewareInterface;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use RcmI18n\Entity\Message;
@@ -11,7 +13,7 @@ use Zend\Diactoros\Response\JsonResponse;
 /**
  * @author James Jervis - https://github.com/jerv13
  */
-class MessagesController
+class MessagesController implements MiddlewareInterface
 {
     /**
      * @var \Doctrine\ORM\EntityRepository
@@ -28,18 +30,17 @@ class MessagesController
     }
 
     /**
-     * __invoke
+     * process
      *
      * @param ServerRequestInterface $request
-     * @param ResponseInterface      $response
-     * @param callable|null          $next
+     * @param Delegate|null          $delegate
      *
      * @return ResponseInterface
      */
-    public function __invoke(
+    public function process(
         ServerRequestInterface $request,
         ResponseInterface $response,
-        callable $next = null
+        DelegateInterface $delegate = null
     ) {
         $locale = $request->getAttribute('rcmi18n-locale');
 
